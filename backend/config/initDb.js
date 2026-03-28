@@ -4,12 +4,24 @@ require('dotenv').config();
 const initializeDatabase = async () => {
   let connection;
   try {
+    // Log environment variables status
+    console.log('📋 Environment Variables Check:');
+    console.log(`  DB_HOST: ${process.env.DB_HOST ? '✓ SET' : '✗ MISSING'}`);
+    console.log(`  DB_USER: ${process.env.DB_USER ? '✓ SET' : '✗ MISSING'}`);
+    console.log(`  DB_PASSWORD: ${process.env.DB_PASSWORD ? '✓ SET' : '✗ MISSING'}`);
+    console.log(`  DB_NAME: ${process.env.DB_NAME ? '✓ SET' : '✗ MISSING'}`);
+    console.log(`  DB_PORT: ${process.env.DB_PORT ? '✓ SET' : '✗ MISSING'}`);
+    console.log(`  NODE_ENV: ${process.env.NODE_ENV || 'development'}`);
+
     // Connect to MySQL server (without database)
     connection = await mysql.createConnection({
       host: process.env.DB_HOST || 'localhost',
       user: process.env.DB_USER || 'root',
       password: process.env.DB_PASSWORD || 'password',
-      port: process.env.DB_PORT || 3306
+      port: process.env.DB_PORT || 3306,
+      ssl: process.env.NODE_ENV === 'production' ? {
+        rejectUnauthorized: false
+      } : undefined
     });
 
     const dbName = process.env.DB_NAME || 'scheduling_platform';
